@@ -74,13 +74,16 @@ while (true) {
                     //MOVEMENTS HISTORY    
                     } else if (inputMenu == 4){
                         alertString = ""
-                        for (operation of obj.movements) {
-                            newString = `${obj.movements.indexOf(operation) + 1}) TYPE: £ ${operation.type} | AMOUNT: ${operation.cash} | DATE: ${operation.date}\n`   
-                            alertString += newString
+                        if(obj.movements.length != 0) {
+                            for (operation of obj.movements) {
+                                newString = `${obj.movements.indexOf(operation) + 1}) TYPE: £ ${operation.type} | AMOUNT: ${operation.cash} | DATE: ${operation.date}\n`   
+                                alertString += newString
+                            }
+                            alert(alertString)
+                            // fin quando non viene fatto il ciclo , non stamperà nessun movimento salvato
+                        } else {
+                            alert("History is empty!")
                         }
-                        alert(alertString)
-                        // fin quando non viene fatto il ciclo , non stamperà nessun movimento salvato
-
 
                     //ESC
                     } else if (inputMenu.toUpperCase() == "ESC") {
