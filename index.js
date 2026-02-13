@@ -7,17 +7,13 @@ let user1={
     pin: "ciao",
     balance: 500,
     movements: [],
-    // controllo disponibilità fondi 
-    Withdrawal: function() {  
-       
-    }
 }
 
 let user2={
     username: "BrunoH",
     pin: "<18 <3",
     balance: 10000,
-    movements:[" ciao "]  
+    movements:[]  
 }
 
 accounts.splice(0,0,user1,user2)
@@ -34,7 +30,7 @@ while (true) {
 
                 //MENU CICLE
                 while (true) {                
-                    const inputMenu = prompt(' 1. Withdrawal \n 2. Deposit \n 3. CheckBalance \n 4. History ')
+                    const inputMenu = prompt(' 1. Withdrawal \n 2. Deposit \n 3. CheckBalance \n 4. History \n 5.Credit Transfer \n 6)ESC')
 
                     //WITHDRAWAL
                     if (inputMenu == 1) {
@@ -72,21 +68,55 @@ while (true) {
                         
 
                     //MOVEMENTS HISTORY    
-                    } else if (inputMenu == 4){
-                        alertString = ""
-                        if(obj.movements.length != 0) {
+                    } else if(inputMenu == 4){
+                        let alertString = ""
+                        if (obj.movements.length != 0) {
                             for (operation of obj.movements) {
-                                newString = `${obj.movements.indexOf(operation) + 1}) TYPE: £ ${operation.type} | AMOUNT: ${operation.cash} | DATE: ${operation.date}\n`   
+                                newString = `${obj.movements.indexOf(operation) + 1}) TYPE: ${operation.type} | AMOUNT: £ ${operation.cash} | DATE: ${operation.date}\n`   
                                 alertString += newString
                             }
                             alert(alertString)
-                            // fin quando non viene fatto il ciclo , non stamperà nessun movimento salvato
                         } else {
                             alert("History is empty!")
                         }
 
+                    //CREDIT TRANSFER
+                    } else if(inputMenu == 5){
+                        let transferAmount = parseInt(prompt("Enter how much you want to send: "));
+                        let receiverUsername = prompt("Enter the receiver Username: ");
+
+                        if (transferAmount <= obj.balance && transferAmount>0 ) {
+                            for (let user of accounts) {
+                                if (receiverUsername === user.username && receiverUsername != obj.username) {
+
+                                    obj.balance -= transferAmount
+                                    let operationOut = {
+                                        type: "Outgoing Credit Transfer",
+                                        cash: transferAmount,
+                                        date: new Date().toLocaleString("it-IT", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})                          
+                                    }
+                                    obj.movements.push(operationOut)
+                                    
+                                    user.balance += transferAmount
+                                    let operationIn = {
+                                        type: "Incoming Credit Transfer",
+                                        cash: transferAmount,
+                                        date: new Date().toLocaleString("it-IT", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})                          
+                                    } 
+                                    user.movements.push(operationIn) 
+
+                                    break
+                                } else if (accounts.indexOf(user) == accounts.length - 1  && receiverUsername != user.username ) {
+                                    alert("Receiver not found, you have no FRIENDS!")
+                                }
+                            }
+
+                        } else {
+                            alert("You don't have enough money for that! \n Get a JOB, we are not a charity center! ")
+                        }
+            
                     //ESC
-                    } else if (inputMenu.toUpperCase() == "ESC") {
+                    } else if(inputMenu.toUpperCase() == "6") {
                         alert(`See you soon, \"${obj.username}\"`)
                         break;
 
@@ -101,8 +131,7 @@ while (true) {
                 alert('fail... try again loser!')
                 break;
             } 
-        }
-        if(accounts.indexOf(obj) == accounts.length-1){
+        } else if(accounts.indexOf(obj) == accounts.length-1){
             alert('fail... try again loser!')
         }
     }
